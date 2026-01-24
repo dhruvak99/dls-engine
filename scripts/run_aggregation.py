@@ -40,3 +40,8 @@ if __name__ == "__main__":
     print("\nSample resource percentages:")
     for k in list(resource_table.keys())[:10]:
         print(k, "->", round(resource_table[k], 2))
+
+    output_csv = "data/derived/resource_table_empirical.csv"
+    agg.export_resource_table_csv(output_csv)
+
+    print(f"\nResource table exported to: {output_csv}")
