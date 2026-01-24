@@ -28,3 +28,15 @@ if __name__ == "__main__":
     # Print a few example keys
     for k in list(data.keys())[:5]:
         print(k, "->", len(data[k]), "samples")
+
+    mean_table = agg.compute_mean_runs()
+
+    print("\nSample mean values:")
+    for k in list(mean_table.keys())[:5]:
+        print(k, "->", round(mean_table[k], 2))
+
+    resource_table = agg.compute_resource_percentages()
+
+    print("\nSample resource percentages:")
+    for k in list(resource_table.keys())[:10]:
+        print(k, "->", round(resource_table[k], 2))
