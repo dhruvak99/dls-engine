@@ -2,6 +2,7 @@ from collections import defaultdict
 from typing import Dict, List, Tuple
 import csv
 from pathlib import Path
+import pickle
 State = Dict[str, float]
 Key = Tuple[float, int]
 
@@ -67,3 +68,22 @@ class ResourceAggregator:
 
             for (overs, wickets), resource in sorted(resource_table.items()):
                 writer.writerow([overs, wickets, round(resource, 4)])
+    def save(self, path: str) -> None:
+        """
+        Save aggregator state to disk (for batch checkpointing).
+        """
+        with open(path, "wb") as f:
+            pickle.dump(dict(self._data), f)
+
+
+    @classmethod
+    def load(cls, path: str):
+        """
+        Load aggregator state from disk.
+        """
+        with open(path, "rb") as f:
+            data = pickle.load(f)
+
+        agg = cls()
+        agg._data.update(data)
+        return agg          
