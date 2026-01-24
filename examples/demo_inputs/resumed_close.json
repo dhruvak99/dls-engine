@@ -1,0 +1,14 @@
+{
+  "match_status": "resumed",
+  "team1": {
+    "score": 300,
+    "overs_faced": 50.0,
+    "wickets_lost": 7
+  },
+  "team2": {
+    "runs_scored": 90,
+    "overs_faced": 27.5,
+    "wickets_lost": 3,
+    "scheduled_overs": 40.0
+  }
+}

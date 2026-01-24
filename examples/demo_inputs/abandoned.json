@@ -1,0 +1,14 @@
+{
+  "match_status": "abandoned",
+  "team1": {
+    "score": 250,
+    "overs_faced": 50.0,
+    "wickets_lost": 9
+  },
+  "team2": {
+    "runs_scored": 180,
+    "overs_faced": 28.0,
+    "wickets_lost": 4,
+    "scheduled_overs": 50.0
+  }
+}
