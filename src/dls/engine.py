@@ -7,40 +7,65 @@ from dls.resource_table import ResourceTable
 class DLSEngineError(ValueError):
     pass
 
+def bucket_overs(overs: float) -> float:
+    """
+    Round DOWN to nearest 0.5 over.
+    """
+    return int(overs * 2) / 2
 
 class DLSEngine:
     def __init__(self, resource_table_path: str):
         self.resource_table = ResourceTable(resource_table_path)
-
+    
     def compute_team1_resources_used(
         self, overs_faced: float, wickets_lost: int
     ) -> float:
         """
         Compute Team 1 resources used (%).
 
-        If Team 1 bats full 50 overs, resources used = 100%.
+        If Team 1 bats full 50 overs or is all out, resources used = 100%.
         Otherwise, compute from remaining resources.
         """
-        if overs_faced >= 50.0:
+
+        # If Team 1 completed the innings, full resources used
+        if overs_faced >= 50.0 or wickets_lost >= 10:
             return 100.0
 
+        # Compute overs remaining
         overs_remaining = 50.0 - overs_faced
 
+        # Bucket overs to match resource table resolution
+        overs_bucketed = bucket_overs(overs_remaining)
+
+        if overs_bucketed < 0:
+            overs_bucketed = 0.0
+
         resource_remaining = self.resource_table.get_resource(
-            overs_remaining, wickets_lost
+            overs_bucketed, wickets_lost
         )
+
+        # 🔒 Clamp remaining resources to [0, 100]
+        resource_remaining = max(0.0, min(resource_remaining, 100.0))
 
         return 100.0 - resource_remaining
 
     def compute_team2_resources_available(
         self, overs_remaining: float, wickets_lost: int
     ) -> float:
-        """
-        Compute Team 2 resources available (%).
-        """
-        return self.resource_table.get_resource(
-            overs_remaining, wickets_lost
+        # Bucket overs to match resource table resolution
+        overs_bucketed = bucket_overs(overs_remaining)
+
+        if overs_bucketed < 0:
+            overs_bucketed = 0.0
+
+        resource = self.resource_table.get_resource(
+            overs_bucketed, wickets_lost
         )
+
+        # 🔒 Clamp to valid range
+        resource = max(0.0, min(resource, 100.0))
+
+        return resource
 
     def compute_par_score(
         self,
