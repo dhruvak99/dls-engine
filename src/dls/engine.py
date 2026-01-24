@@ -16,7 +16,7 @@ def bucket_overs(overs: float) -> float:
 class DLSEngine:
     def __init__(self, resource_table_path: str):
         self.resource_table = ResourceTable(resource_table_path)
-    
+
     def compute_team1_resources_used(
         self, overs_faced: float, wickets_lost: int
     ) -> float:
@@ -136,3 +136,39 @@ class DLSEngine:
 
         else:
             raise DLSEngineError("Invalid match status")
+    def compute_expected_score_at_overs(
+        self,
+        team2_score: int,
+        par_score: float,
+        overs_remaining_now: float,
+        overs_remaining_future: float,
+        wickets_lost: int,
+    ) -> float:
+        """
+        Expected Team 2 score at a future overs_remaining point,
+        anchored to the DLS par score.
+        """
+
+        now_bucket = bucket_overs(overs_remaining_now)
+        future_bucket = bucket_overs(overs_remaining_future)
+
+        if now_bucket <= 0:
+            return team2_score
+
+        res_now = self.resource_table.get_resource(now_bucket, wickets_lost)
+        res_future = self.resource_table.get_resource(future_bucket, wickets_lost)
+
+        # Clamp defensively
+        res_now = max(0.0, min(res_now, 100.0))
+        res_future = max(0.0, min(res_future, 100.0))
+
+        # Fraction of remaining resources used
+        # If no remaining resources now, score cannot increase
+        # If no remaining resources now, score cannot increase
+        if res_now <= 0:
+            return team2_score
+
+        fraction_completed = (res_now - res_future) / res_now
+        expected_score = team2_score + fraction_completed * (par_score - team2_score)
+
+        return expected_score

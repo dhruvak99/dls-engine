@@ -51,12 +51,20 @@ def run_dls_pipeline(
             team2_overs_remaining, team2_wickets_lost
         )
 
-        par_score = engine.compute_par_score(
-            team1_score, r1_used, r2_available
-        )
-        revised_target = engine.compute_revised_target(
-            team1_score, r1_used, r2_available
-        )
+        # r2_available now represents expected runs remaining
+        expected_runs_remaining = r2_available
+        #below line scales the data over 50 overs, before used to get par score more than team 1 score
+        expected_runs_remaining = r2_available * (total_overs / 50.0)
+        expected_runs_remaining = max(0.0, expected_runs_remaining)
+
+        #temp debug code starts
+        # print("DEBUG total_overs:", total_overs)
+        # print("DEBUG r2_available (raw):", r2_available)
+        # print("DEBUG scale factor:", total_overs / 50.0)
+        # print("DEBUG expected_runs_remaining (scaled):", expected_runs_remaining)
+        #temp debug code ends
+        par_score = team2_score + expected_runs_remaining
+        revised_target = int(par_score) + 1
 
         decision = engine.decide_match_outcome(
             match_status=match_status,
@@ -72,6 +80,7 @@ def run_dls_pipeline(
     return {
         "team1_resources_used_pct": round(r1_used, 2),
         "team2_resources_available_pct": round(r2_available, 2),
+        "expected_runs_remaining": round(expected_runs_remaining,2),
         "par_score": round(par_score, 2),
         "revised_target": revised_target,
         "decision": decision,
