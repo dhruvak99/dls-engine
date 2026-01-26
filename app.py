@@ -146,6 +146,10 @@ if input_mode == "Structured Form":
             st.success("DLS Decision Computed")
 
             decision = result["decision"]
+            ORIGINAL_OVERS = 50
+            no_dls_applied = (
+                match_status == "resumed" and abs(t2_scheduled - ORIGINAL_OVERS) < 1e-6
+                )
 
             st.subheader("Decision")
             st.write(f"**Result:** {decision['result']}")
@@ -156,9 +160,9 @@ if input_mode == "Structured Form":
             if "runs_needed" in decision:
                 st.write(f"**Runs Needed:** {decision['runs_needed']}")
 
+
             # ---------- Step 2: Expected score progression ----------
-            # ---------- Step 2: Expected score progression ----------
-            if match_status == "resumed":
+            if match_status == "resumed" and not no_dls_applied:
                 st.subheader("📈 Expected Score Progression (No Further Wickets)")
                 st.caption("Expected score assuming no further wicket loss.")
 
@@ -207,6 +211,11 @@ if input_mode == "Structured Form":
                 )
 
                 st.altair_chart(chart, use_container_width=True)
+            if no_dls_applied:
+                    st.info(
+                        "No DLS adjustment required. "
+                        "Match continues as a standard 50-over chase."
+                        )
 
         except InputValidationError as e:
             st.error(f"Invalid input: {e}")

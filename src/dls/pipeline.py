@@ -40,6 +40,33 @@ def run_dls_pipeline(
 
     team2_overs_remaining = total_overs - team2_overs_faced
 
+        # ---------- No DLS adjustment case ----------
+    ORIGINAL_OVERS = 50.0
+
+    if (
+        match_status == "resumed"
+        and abs(total_overs - ORIGINAL_OVERS) < 1e-6
+    ):
+        revised_target = team1_score + 1
+        runs_needed = max(0, revised_target - team2_score)
+
+        return {
+            "team1_resources_used_pct": 100.0,
+            "team2_resources_available_pct": 100.0,
+            "expected_runs_remaining": round(
+                max(0, revised_target - team2_score), 2
+            ),
+            "par_score": team1_score,
+            "revised_target": revised_target,
+            "decision": {
+                "result": "Match resumed (no DLS adjustment)",
+                "revised_target": revised_target,
+                "team2_score": team2_score,
+                "runs_needed": runs_needed,
+            },
+        }
+
+    
     # ---------- Engine ----------
     engine = DLSEngine(resource_table_path)
 
