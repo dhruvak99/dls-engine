@@ -20,39 +20,39 @@ RESOURCE_TABLE_PATH = "data/derived/resource_table_empirical_final.csv"
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
-bg_image = get_base64_image("assets/background_image.jpg")
+#bg_image = get_base64_image("assets/background_image.jpg")
 # -------- Page config --------
 st.set_page_config(page_title="DLS Engine Demo", layout="centered")
 #for background image
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-image: url("data:image/jpg;base64,{bg_image}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
+# st.markdown(
+#     """
+#     <style>
+#     .stApp {
+#         background-image: url("data:image/jpg;base64,{bg_image}");
+#         background-size: cover;
+#         background-position: center;
+#         background-attachment: fixed;
+#     }
 
-    /* White translucent overlay for readability */
-    .stApp::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.85);
-        z-index: -1;
-    }
+#     /* White translucent overlay for readability */
+#     .stApp::before {
+#         content: "";
+#         position: fixed;
+#         top: 0;
+#         left: 0;
+#         width: 100%;
+#         height: 100%;
+#         background: rgba(255, 255, 255, 0.85);
+#         z-index: -1;
+#     }
 
-    h1, h2, h3 {
-        color: #1b4332;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+#     h1, h2, h3 {
+#         color: #1b4332;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
 #code for background image ends here
 st.title("🏏 DLS Engine Demo")
 
