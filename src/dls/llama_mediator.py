@@ -3,7 +3,11 @@ import json
 import os
 
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://100.75.119.97:30068/api/generate")
+OLLAMA_BASE_URL = os.getenv(
+    "OLLAMA_URL",
+    "http://127.0.0.1:30068"
+)
+
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 
 
@@ -64,8 +68,9 @@ Input:
 \"\"\"{user_text}\"\"\"
 """
 
+    try:
     response = requests.post(
-        OLLAMA_URL,
+        f"{OLLAMA_BASE_URL}/api/generate",
         json={
             "model": MODEL_NAME,
             "prompt": prompt,
@@ -73,6 +78,11 @@ Input:
         },
         timeout=30
     )
+    except requests.exceptions.RequestException as e:
+        raise LLaMAMediatorError(
+            f"LLaMA service unreachable at {OLLAMA_BASE_URL}. "
+            "Check OLLAMA_URL configuration."
+        ) from e
 
     if response.status_code != 200:
         raise LLaMAMediatorError(
