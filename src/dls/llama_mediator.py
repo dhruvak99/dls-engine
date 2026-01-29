@@ -69,15 +69,15 @@ Input:
 """
 
     try:
-    response = requests.post(
-        f"{OLLAMA_BASE_URL}/api/generate",
-        json={
-            "model": MODEL_NAME,
-            "prompt": prompt,
-            "stream": False
-        },
-        timeout=30
-    )
+        response = requests.post(
+            f"{OLLAMA_BASE_URL}/api/generate",
+            json={
+                "model": MODEL_NAME,
+                "prompt": prompt,
+                "stream": False
+            },
+            timeout=30
+        )
     except requests.exceptions.RequestException as e:
         raise LLaMAMediatorError(
             f"LLaMA service unreachable at {OLLAMA_BASE_URL}. "
