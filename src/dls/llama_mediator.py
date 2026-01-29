@@ -3,7 +3,7 @@ import json
 import os
 
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://192.168.0.182:30068/api/generate")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://100.75.119.97:30068/api/generate")
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 
 
